@@ -1,0 +1,82 @@
+const express = require('express')
+const mongoose = require('mongoose')
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const User = require('./models/userSchema')
+
+const SECRET_KEY = 'secretkey'
+
+//connect to express app
+const app = express()
+
+//connect to MongoDB
+const dbURI = 'mongodb+srv://bisimbulan1:QRGtFPZERGgmQwoc@cluster0.cvskgn9.mongodb.net/UsersDB?retryWrites=true&w=majority&appName=Cluster0'
+mongoose.connect(dbURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    app.listen(3001, () => {
+        console.log('Server is connected to port 3001 and connected to MongoDb')
+    })
+})
+    .catch((error) => {
+        console.log('Unable to connect to Server and/or MongoDb')
+    })
+//middleware
+app.use(bodyParser.json())
+app.use(cors())
+
+
+
+//Routes
+//USER REGISTRATION
+//POST REGISTER
+app.post('/register', async (req, res) => {
+    try {
+        const { firstname, middlename, lastname, email, password } = req.body
+        const hashedPassword = await bcrypt.hash(password, 10) //10 is how hard the password can be unhashed
+        const customerType = 'customer'
+        const newUser = new User({ firstname, middlename, lastname, usertype: customerType, email, password: hashedPassword })
+        await newUser.save()
+        res.status(201).json({ message: 'User created successfully' })
+    } catch (error) {
+        res.status(500).json({ error: 'Error signing up' })
+    }
+})
+
+//GET REGISTERED USERS
+app.get('/register', async (req, res) => {
+    try {
+        const users = await User.find()
+        res.status(201).json(users)
+    } catch (error) {
+        res.status(500).json({ error: 'Unable to get users' })
+    }
+})
+
+
+//GET LOGIN
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' })
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid credentials' })
+        }
+        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1hr' })
+        res.json({ message: 'Login successful' })
+    } catch (error) {
+        res.status(500).json({ error: 'Error logging in' })
+    }
+})
+
+// Create // POST REQUEST
+// Read // GET REQUEST
+// Update // PUT or PATCH REQUEST
+// Delete // DELETE REQUEST
