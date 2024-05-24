@@ -25,16 +25,28 @@ function Login() {
         event.preventDefault();
         try {
             const response = await axios.post('http://localhost:3001/login', { email, password })
+            console.log('HANDLE LOGIN')
+            console.log(response.data)
             const token = response.data.token
+            const usertype = response.data.usertype
+            const firstname = response.data.firstname
+            const lastname = response.data.lastname
+            localStorage.setItem('token', token);
+            localStorage.setItem('usertype', usertype);
+            localStorage.setItem('firstname', firstname);
+            localStorage.setItem('lastname', lastname);
             alert('Login successful')
             setEmail('')
             setPassword('')
             fetchUsers();
-            navigate('/account')
+            if (usertype === 'Customer') {
+                navigate('/account')
+            } else {
+                navigate('/admin')
+            }
             window.location.reload()
-            localStorage.setItem('token', token)
         } catch (error) {
-            console.log('Login Error')
+            console.log(error)
         }
     }
 

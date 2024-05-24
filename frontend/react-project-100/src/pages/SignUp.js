@@ -11,6 +11,7 @@ function SignUp() {
     const [usertype, setUsertype] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState('');
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -24,12 +25,29 @@ function SignUp() {
             })
     }
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+
     // To prevent the page from refreshing
     const handleRegister = (event) => {
         event.preventDefault()
+
+        if (!firstname || !lastname || !email || !password) {
+            setError('Please fill in all required fields.');
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            setError('Please enter a valid email address.')
+            return;
+        }
+
         axios.post('http://localhost:3001/register', { firstname, middlename, lastname, usertype, email, password })
             .then(() => {
-                alert('Registratin successful')
+                alert('Registration successful')
                 setFirstname('')
                 setMiddlename('')
                 setLastname('')
@@ -40,7 +58,8 @@ function SignUp() {
                 navigate('/login')
             })
             .catch((error) => {
-                console.log('Unable to register user')
+                console.log('Unable to register user', error);
+                setError('Registration failed. Please try again.');
             })
     }
 
@@ -48,12 +67,13 @@ function SignUp() {
         <div className='w-full h-screen flex'>
             <div className='w-[50%] h-[100%] bg-[#1a1a1a] text-white flex justify-center items-center'>
                 <form className='text-center border rounded-lg w-[600px] h-[600px] p-9' onSubmit={handleRegister}>
+                    {error && <p className='text-red-500'>{error}</p>}
                     {/* Firstname Input */}
                     <label>First name</label>
                     <br />
                     <input className='w-[400px] h-[40px] rounded-xl bg-zinc-700 p-2'
                         type='text'
-                        placeholder='First name'
+                        placeholder='First name | Required'
                         value={firstname}
                         onChange={(e => setFirstname(e.target.value))} />
                     <br />
@@ -73,7 +93,7 @@ function SignUp() {
                     <br />
                     <input className='w-[400px] h-[40px] rounded-xl bg-zinc-700 p-2'
                         type='text'
-                        placeholder='Last name'
+                        placeholder='Last name | Required'
                         value={lastname}
                         onChange={(e => setLastname(e.target.value))} />
                     <br />
@@ -83,7 +103,7 @@ function SignUp() {
                     <br />
                     <input className='w-[400px] h-[40px] rounded-xl bg-zinc-700 p-2'
                         type='text'
-                        placeholder='Email'
+                        placeholder='Email | Required'
                         value={email}
                         onChange={(e => setEmail(e.target.value))} />
                     <br />
@@ -92,7 +112,7 @@ function SignUp() {
                     <br />
                     <input className='w-[400px] h-[40px] rounded-xl bg-zinc-700 p-2'
                         type='password'
-                        placeholder='Password'
+                        placeholder='Password | Required'
                         value={password}
                         onChange={(e => setPassword(e.target.value))} />
                     <br />

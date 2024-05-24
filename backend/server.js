@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('./models/userSchema')
+const Product = require('./models/productSchema')
 
 const SECRET_KEY = 'secretkey'
 
@@ -37,7 +38,7 @@ app.post('/register', async (req, res) => {
     try {
         const { firstname, middlename, lastname, email, password } = req.body
         const hashedPassword = await bcrypt.hash(password, 10) //10 is how hard the password can be unhashed
-        const customerType = 'customer'
+        const customerType = 'Customer'
         const newUser = new User({ firstname, middlename, lastname, usertype: customerType, email, password: hashedPassword })
         await newUser.save()
         res.status(201).json({ message: 'User created successfully' })
@@ -70,11 +71,22 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' })
         }
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1hr' })
-        res.json({ message: 'Login successful' })
+        res.json({ message: 'Login successful', token, usertype: user.usertype, firstname: user.firstname, lastname: user.lastname })
     } catch (error) {
         res.status(500).json({ error: 'Error logging in' })
     }
 })
+
+
+app.get('/products', async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ error: 'Unable to fetch products' });
+    }
+});
+
 
 // Create // POST REQUEST
 // Read // GET REQUEST
