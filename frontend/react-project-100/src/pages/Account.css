@@ -26,3 +26,21 @@
 .search-form::placeholder {
     color: #A5D0AB;
 }
+
+
+/* ====================== */
+
+.card-item:hover {
+    color: #90ff59;
+    border: #90ff59 solid 1px;
+    transform: scale(1.1);
+    transition: 0.1s;
+    background: #fff;
+
+}
+
+.card-item:active {
+    color: white;
+    opacity: 1;
+    background: red;
+}
