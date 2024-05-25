@@ -84,6 +84,7 @@
 /* ====================== */
 
 .drawer-widget {
+    display: flex;
     padding-top: 19px;
     padding-left: 19px;
     width: 100%;
@@ -95,4 +96,63 @@
 
 .list-items {
     margin-bottom: 20%;
+}
+
+/* ====================== */
+
+.filterbar {
+    position: fixed;
+    top: 0;
+    right: -450px;
+    /* Initially hidden */
+    width: 450px;
+    height: 100%;
+    background-color: #1C2C20;
+    transition: 0.3s;
+    z-index: 1;
+}
+
+.filterbar.active {
+    right: 0px
+}
+
+.filter-widget {
+    padding-top: 19px;
+    display: flex;
+    padding-right: 19px;
+    width: 100%;
+    height: 56px;
+    background-color: #274B2C;
+    justify-content: end;
+    flex-direction: row-reverse;
+}
+
+.icons {
+    width: 48px;
+    height: 48px;
+    color: white;
+
+
+}
+
+.icons:hover {
+    background-color: #3e8e41;
+    border-radius: 20px;
+    width: 50%;
+}
+
+.two-icons {
+
+    color: white;
+}
+
+.two-icons:hover {
+    background-color: #3e8e41;
+    border-radius: 20px;
+    width: 50%;
+}
+
+.remove-button:hover {
+    background-color: red;
+    border-radius: 20px;
 }
