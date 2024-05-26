@@ -31,11 +31,12 @@
 /* ====================== */
 
 .card-item:hover {
-    color: #90ff59;
-    border: #90ff59 solid 1px;
+
+    color: #58933a;
+    border: #474646 solid 1px;
     transform: scale(1.1);
     transition: 0.1s;
-    background: #fff;
+    background: #95f166;
 
 }
 

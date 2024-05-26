@@ -10,9 +10,9 @@ import { FaSortNumericDownAlt } from "react-icons/fa";
 import { TbCurrencyPeso } from "react-icons/tb";
 import { GiGrainBundle } from "react-icons/gi";
 import { GiChicken } from "react-icons/gi";
-import './Navbar.css'
+import './AdminNavbar.css'
 
-function Navbar({ onSortChange }) {
+function AdminNavbar({ onSortChange }) {
     const [sidebar, setSidebar] = useState(false)
     const [filterbar, setFilterBar] = useState(false)
     const isUserSignedIn = !!localStorage.getItem('token')
@@ -44,62 +44,64 @@ function Navbar({ onSortChange }) {
         <>
             {isUserSignedIn ? (
                 <div className='sticky top-0 bg-[#274B2C] w-full p-5 flex justify-between'>
-                    <FaIcons.FaBars onClick={toggleSidebar} className='cursor-pointer' />
-                    <CiFilter onClick={toggleFilterbar} className='filter-icon text-[#FFFFFF] w-4 h-4 font-bold' />
-                    <div className={sidebar ? 'sidebar active' : 'sidebar'}>
-                        <div className='drawer-widget'>
-                            <FaIcons.FaBars onClick={toggleSidebar} className='cursor-pointer' />
+                    <FaIcons.FaBars onClick={toggleSidebar} className='cursor-pointer-admin' />
+                    <CiFilter onClick={toggleFilterbar} className='filter-icon-admin text-[#FFFFFF] w-4 h-4 font-bold' />
+                    <div className={sidebar ? 'sidebar-admin active' : 'sidebar-admin'}>
+                        <div className='drawer-widget-admin'>
+                            <FaIcons.FaBars onClick={toggleSidebar} className='cursor-pointer-admin' />
                             <span className='pl-4 text-white font-bold text-xs'>Profile's menu</span>
                         </div>
-                        <div className='profile-container'>
-                            <CgProfile className='profile-icon' />
-                            <div className="profile-text">
-                                <span className='profile-firstname'>{firstname} {lastname}</span>
-                                <span className='profile-customer'>customer</span>
+                        <div className='profile-container-admin'>
+                            <CgProfile className='profile-icon-admin' />
+                            <div className="profile-text-admin">
+                                <span className='profile-firstname-admin'>{firstname} {lastname}</span>
+                                <span className='profile-customer-admin'>merchant</span>
                             </div>
                         </div>
-                        <ul className='list-items' onClick={toggleSidebar}>
-                            <Link to='/account'><li>Profile Details</li></Link>
-                            <Link to='/account/cart'><li>Manage Shopping Cart</li></Link>
+                        <ul className='list-items-admin' onClick={toggleSidebar}>
+                            <Link to='/admin/users'><li>User accounts</li></Link>
+                            <Link to='/admin/products'><li>Product listings</li></Link>
+                            <Link to='/admin/transactions'><li>Order fulfillment</li></Link>
+                            <li>Sales reports</li>
                         </ul>
-                        <button className='signout-button' onClick={handleSignOut}>LOG OUT</button>
+                        <button className='signout-button-admin' onClick={handleSignOut}>LOG OUT</button>
                     </div>
 
-                    <div className={filterbar ? 'filterbar active' : 'filterbar'}>
-                        <div className='filter-widget'>
-                            <CiFilter onClick={toggleFilterbar} className='filter-icon text-[#FFFFFF] w-4 h-4 font-bold' />
+                    <div className={filterbar ? 'filterbar-admin active' : 'filterbar-admin'}>
+                        <div className='filter-widget-admin'>
+                            <CiFilter onClick={toggleFilterbar} className='filter-icon-admin text-[#FFFFFF] w-4 h-4 font-bold' />
                             <span className='pr-4 text-white font-bold text-xs '>Sort filter</span>
                         </div>
                         <div className='flex flex-col'>
                             <span className='pb-4 text-white font-bold text-2xl'>Sort by Name</span>
                             <div className='flex justify-around mb-16'>
-                                <FaSortAlphaDown onClick={() => handleSortChange('name')} className='icons' />
-                                <FaSortAlphaDownAlt onClick={() => handleSortChange('-name')} className='icons' />
+                                <FaSortAlphaDown onClick={() => handleSortChange('name')} className='icons-admin' />
+                                <FaSortAlphaDownAlt onClick={() => handleSortChange('-name')} className='icons-admin' />
                             </div>
                             <span className='pb-4 text-white font-bold text-2xl'>Sort by Type</span>
                             <div className='flex justify-around mb-16'>
-                                <GiGrainBundle onClick={() => handleSortChange('type')} className='icons' />
-                                <GiChicken onClick={() => handleSortChange('-type')} className='icons' />
+                                <GiGrainBundle onClick={() => handleSortChange('type')} className='icons-admin' />
+                                <GiChicken onClick={() => handleSortChange('-type')} className='icons-admin' />
                             </div>
                             <span className='pb-4 text-white font-bold text-2xl'>Sort by Price</span>
                             <div className='flex justify-around mb-16'>
-                                <div onClick={() => handleSortChange('price')} className='two-icons flex justify-center'>
+                                <div onClick={() => handleSortChange('price')} className='two-icons-admin flex justify-center'>
                                     <TbCurrencyPeso className='w-12 h-12' />
                                     <FaSortNumericDown className='w-12 h-12' />
                                 </div>
-                                <div onClick={() => handleSortChange('-price')} className='two-icons flex justify-center'>
+                                <div onClick={() => handleSortChange('-price')} className='two-icons-admin flex justify-center'>
                                     <TbCurrencyPeso className='w-12 h-12' />
                                     <FaSortNumericDownAlt className='w-12 h-12' />
                                 </div>
                             </div>
                             <span className='pb-4 text-white font-bold text-2xl'>Sort by Quantity</span>
                             <div className='flex justify-around mb-8'>
-                                <FaSortNumericDown onClick={() => handleSortChange('quantity')} className='icons' />
-                                <FaSortNumericDownAlt onClick={() => handleSortChange('-quantity')} className='icons' />
+                                <FaSortNumericDown onClick={() => handleSortChange('quantity')} className='icons-admin' />
+                                <FaSortNumericDownAlt onClick={() => handleSortChange('-quantity')} className='icons-admin' />
                             </div>
                             <button
                                 onClick={() => handleSortChange('null')}
-                                className='remove-button flex justify-center pb-4 text-white font-bold text-2xl'>Remove filter
+                                className='remove-button-admin flex justify-center pb-4 text-white font-bold text-2xl'>Remove filter
                             </button>
                         </div>
                     </div>
@@ -121,5 +123,5 @@ function Navbar({ onSortChange }) {
     )
 }
 
-export default Navbar
+export default AdminNavbar
 

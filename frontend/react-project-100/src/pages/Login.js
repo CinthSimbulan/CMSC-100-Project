@@ -31,10 +31,14 @@ function Login() {
             const usertype = response.data.usertype
             const firstname = response.data.firstname
             const lastname = response.data.lastname
+            const uemail = response.data.userEmail
+            console.log('Local storage firstname: ', firstname)
+            console.log('Local storage email: ', uemail)
             localStorage.setItem('token', token);
             localStorage.setItem('usertype', usertype);
             localStorage.setItem('firstname', firstname);
             localStorage.setItem('lastname', lastname);
+            localStorage.setItem('email', uemail);
             alert('Login successful')
             setEmail('')
             setPassword('')

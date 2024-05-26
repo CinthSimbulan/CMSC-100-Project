@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('./models/userSchema')
 const Product = require('./models/productSchema')
+const Transaction = require('./models/transactionSchema')
 
 const SECRET_KEY = 'secretkey'
 
@@ -47,6 +48,30 @@ app.post('/register', async (req, res) => {
     }
 })
 
+app.post('/checkout', async (req, res) => {
+    try {
+        console.log('This is req.body: ', req.body)
+        const { productId, orderQuantity, email } = req.body;
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0].replace(/-/g, ' ');
+        const formattedTime = date.toTimeString().split(' ')[0];
+
+
+        const newTransaction = new Transaction({
+            productId,
+            orderQuantity,
+            orderStatus: 0, // Initially set to Pending
+            email,
+            date: formattedDate,
+            time: formattedTime
+        });
+        await newTransaction.save();
+        res.status(201).json({ message: 'Order placed successfully' });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+});
+
 //GET REGISTERED USERS
 app.get('/register', async (req, res) => {
     try {
@@ -71,7 +96,7 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' })
         }
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1hr' })
-        res.json({ message: 'Login successful', token, usertype: user.usertype, firstname: user.firstname, lastname: user.lastname })
+        res.json({ message: 'Login successful', token, usertype: user.usertype, firstname: user.firstname, lastname: user.lastname, userEmail: user.email })
     } catch (error) {
         res.status(500).json({ error: 'Error logging in' })
     }

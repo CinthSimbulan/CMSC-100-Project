@@ -96,7 +96,9 @@ function Account({ sortOption, onCartChange }) {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 m-4">
                 {/* Map over the filtered products and create divs for each*/}
                 {filteredProducts.map((product) => (
-                    <div onClick={() => addToCart(product._id)} key={product._id} className="card-item bg-[green] p-4 rounded-2xl min-h-72 text-gray-200">
+                    <div onClick={() => addToCart(product._id)} key={product._id}
+                        className="card-item bg-[green] p-4 rounded-2xl min-h-72 text-gray-200"
+                        data-info="Add to Cart">
                         <p className='text-xl'>{product.name}</p>
                         <p>{product.description}</p>
                         <p>Type: {product.type === 1 ? 'Poultry' : 'Crop'}</p>
