@@ -11,8 +11,10 @@ module.exports = {
       '6': '6px',
       '8': '8px',
       '20': '20px',
+      '40': '40px',
     },
-    extend: {},
+    extend: {
+    },
   },
   plugins: [],
 }

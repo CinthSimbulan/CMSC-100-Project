@@ -14,6 +14,12 @@ import AdminUsers from './pages/AdminUsers';
 import AdminProducts from './pages/AdminProducts';
 import AdminTransactions from './pages/AdminTransactions';
 
+import LandingPage from './landing/LandingPage';
+import LoginPage from './dashboard/login/LoginPage'
+import SignUpPage from './dashboard/login/SignUpPage';
+import MainPage from './dashboard/main/MainPage';
+import AdminPage from './dashboard/admin/AdminPage';
+
 
 function App() {
   const [sortOption, setSortOption] = useState(null);
@@ -49,23 +55,13 @@ function App() {
   const userType = localStorage.getItem('usertype');
   return (
     <div className="flex flex-col min-h-screen">
-      {!isUserSignedIn && <Navbar onSortChange={handleSortChange} />}
-      {isUserSignedIn && userType === 'Customer' && <Navbar onSortChange={handleSortChange} />}
-      {isUserSignedIn && userType === 'Merchant' && <AdminNavbar onSortChange={handleSortChange} />}
-      <div className="flex-grow">
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<SignUp />} />
-          {isUserSignedIn && <Route path='/account' element={<Account sortOption={sortOption} onCartChange={addToCart} />} />}
-          {isUserSignedIn && <Route path='/account/cart' element={<Cart cart={cart} onRemoveItem={removeFromCart} onOrderItem={orderSuccess} />} />}
-          {isUserSignedIn && userType === 'Merchant' && <Route path='/admin' element={<Admin />} />}
-          {isUserSignedIn && userType === 'Merchant' && <Route path='/admin/users' element={<AdminUsers />} />}
-          {isUserSignedIn && userType === 'Merchant' && <Route path='/admin/products' element={<AdminProducts />} />}
-          {isUserSignedIn && userType === 'Merchant' && <Route path='/admin/transactions' element={<AdminTransactions />} />}
-        </Routes>
-      </div>
-      <Botbar />
+      <Routes>
+        <Route path='/' element={<LandingPage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/signup' element={<SignUpPage />} />
+        <Route path='/main/*' element={<MainPage />} />
+        <Route path='/admin/*' element={<AdminPage />} />
+      </Routes>
     </div>
 
   );

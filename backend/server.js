@@ -38,6 +38,13 @@ app.use(cors())
 app.post('/register', async (req, res) => {
     try {
         const { firstname, middlename, lastname, email, password } = req.body
+
+        // Check if the email already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10) //10 is how hard the password can be unhashed
         const customerType = 'Customer'
         const newUser = new User({ firstname, middlename, lastname, usertype: customerType, email, password: hashedPassword })
@@ -69,6 +76,15 @@ app.post('/checkout', async (req, res) => {
         res.status(201).json({ message: 'Order placed successfully' });
     } catch (error) {
         res.status(500).json({ error });
+    }
+});
+
+app.get('/checkout', async (req, res) => {
+    try {
+        const transactions = await Transaction.find();
+        res.status(200).json(transactions);
+    } catch (error) {
+        res.status(500).json({ error: 'Unable to fetch transactions' });
     }
 });
 
@@ -116,4 +132,33 @@ app.get('/products', async (req, res) => {
 // Create // POST REQUEST
 // Read // GET REQUEST
 // Update // PUT or PATCH REQUEST
+// Update transaction and product (Confirm Order)
+app.put('/checkout/:id', async (req, res) => {
+    const { id } = req.params;
+    const updatedTransaction = req.body;
+    try {
+        const transaction = await Transaction.findByIdAndUpdate(id, updatedTransaction, { new: true });
+        if (!transaction) {
+            return res.status(404).json({ error: 'Transaction not found' });
+        }
+        res.json(transaction);
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating transaction' });
+    }
+});
+
+app.put('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    const updatedProduct = req.body;
+    try {
+        const product = await Product.findByIdAndUpdate(id, updatedProduct, { new: true });
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        res.json(product);
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating product' });
+    }
+});
+
 // Delete // DELETE REQUEST

@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 
-function Cart({ cart, onRemoveItem, onOrderItem }) {  // Destructure the cart prop correctly
+function Cart({ cart, onRemoveItem, onOrderItem }) {
+    const [transactions, setTransactions] = useState([]);
+    const [products, setProducts] = useState({});
+
     const userEmail = localStorage.getItem('email')
+
 
     const showCart = () => {
         console.log('Cart contents:', cart);
@@ -24,10 +28,42 @@ function Cart({ cart, onRemoveItem, onOrderItem }) {  // Destructure the cart pr
 
     let uniqueItemNames = Object.keys(itemCounts);
 
-    // Function to get the current date
-    // const getDate = () => {
-    //     return new Date();
-    // }
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    useEffect(() => {
+        fetchTransactions();
+    }, []);
+
+    const fetchTransactions = async () => {
+        try {
+            let url = 'http://localhost:3001/checkout';
+            const response = await axios.get(url);
+            let transactionsFromDatabase = response.data;
+            setTransactions(transactionsFromDatabase);
+            fetchTransactions();
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+        }
+    };
+
+    const fetchProducts = async () => {
+        try {
+            let url = 'http://localhost:3001/products';
+            const response = await axios.get(url);
+            let productsFromDatabase = response.data;
+
+            // Convert array to object with product ID as the key
+            let productsMap = {};
+            productsFromDatabase.forEach(product => {
+                productsMap[product._id] = product;
+            });
+            setProducts(productsMap);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
 
     const handleCheckout = (subject) => {
 
@@ -58,6 +94,21 @@ function Cart({ cart, onRemoveItem, onOrderItem }) {  // Destructure the cart pr
             });
     }
 
+    const handleCancelOrder = async (transaction) => {
+        try {
+            // Update order status
+            let updateTransactionUrl = `http://localhost:3001/checkout/${transaction._id}`;
+            await axios.put(updateTransactionUrl, { ...transaction, orderStatus: 2 });
+
+            // Refresh data
+            fetchTransactions();
+        } catch (error) {
+            console.error('Error cancelling order:', error);
+        }
+    };
+
+    const userTransactions = transactions.filter(transaction => transaction.email === userEmail);
+
     return (
         <div>
             <div className='flex justify-center font-black text-6xl'>
@@ -75,6 +126,25 @@ function Cart({ cart, onRemoveItem, onOrderItem }) {  // Destructure the cart pr
                     </div>
                 ))}
             </div>
+
+
+            <div>
+                <h3>Orders</h3>
+                {userTransactions.map((transaction) => (
+                    <div key={transaction._id}>
+                        <p>Product ID: {transaction.productId}</p>
+                        <p>Name: {products[transaction.productId].name}</p>
+                        <p>Order Quantity: {transaction.orderQuantity}</p>
+                        <p>Order Status: {transaction.orderStatus}</p>
+                        {transaction.orderStatus !== 1 && transaction.orderStatus !== 2 && (
+                            <button onClick={() => handleCancelOrder(transaction)}>Cancel Order</button>
+                        )}
+                        <br />
+                        <br />
+                    </div>
+                ))}
+            </div>
+
         </div>
     );
 }
