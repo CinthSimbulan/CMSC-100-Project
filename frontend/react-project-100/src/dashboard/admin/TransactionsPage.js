@@ -13,7 +13,7 @@ function TransactionsPage() {
   }, []);
 
   useEffect(() => {
-    filterTransactions();
+    filterTransactions(); // filterTransactions function will happen everytime there is a change in transactions or searchTerm
   }, [transactions, searchTerm]);
 
   const fetchTransactions = async () => {
